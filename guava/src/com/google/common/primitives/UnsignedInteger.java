@@ -27,6 +27,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
+import org.checkerframework.checker.signedness.qual.Unsigned;
 
 /**
  * A wrapper class for unsigned {@code int} values, supporting arithmetic operations.
@@ -42,14 +43,14 @@ import org.checkerframework.common.value.qual.IntRange;
  * @since 11.0
  */
 @GwtCompatible(emulated = true)
-public final class UnsignedInteger extends Number implements Comparable<UnsignedInteger> {
-  public static final UnsignedInteger ZERO = fromIntBits(0);
-  public static final UnsignedInteger ONE = fromIntBits(1);
-  public static final UnsignedInteger MAX_VALUE = fromIntBits(-1);
+public final @Unsigned class UnsignedInteger extends Number implements Comparable<UnsignedInteger> {
+  public static final @Unsigned UnsignedInteger ZERO = fromIntBits(0);
+  public static final @Unsigned UnsignedInteger ONE = fromIntBits(1);
+  public static final @Unsigned UnsignedInteger MAX_VALUE = fromIntBits(-1);
 
   private final int value;
 
-  private UnsignedInteger(int value) {
+  private @Unsigned UnsignedInteger(int value) {
     // GWT doesn't consistently overflow values to make them 32-bit, so we need to force it.
     this.value = value & 0xffffffff;
   }
@@ -66,7 +67,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    *
    * @since 14.0
    */
-  public static UnsignedInteger fromIntBits(int bits) {
+  public static @Unsigned UnsignedInteger fromIntBits(int bits) {
     return new UnsignedInteger(bits);
   }
 
@@ -74,7 +75,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * Returns an {@code UnsignedInteger} that is equal to {@code value}, if possible. The inverse
    * operation of {@link #longValue()}.
    */
-  public static UnsignedInteger valueOf(@IntRange(from = 0, to = INT_MASK) long value) {
+  public static @Unsigned UnsignedInteger valueOf(@IntRange(from = 0, to = INT_MASK) long value) {
     checkArgument(
         (value & INT_MASK) == value,
         "value (%s) is outside the range for an unsigned integer value",
@@ -88,7 +89,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    *
    * @throws IllegalArgumentException if {@code value} is negative or {@code value >= 2^32}
    */
-  public static UnsignedInteger valueOf(BigInteger value) {
+  public static @Unsigned UnsignedInteger valueOf(BigInteger value) {
     checkNotNull(value);
     checkArgument(
         value.signum() >= 0 && value.bitLength() <= Integer.SIZE,
@@ -104,7 +105,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * @throws NumberFormatException if the string does not contain a parsable unsigned {@code int}
    *     value
    */
-  public static UnsignedInteger valueOf(String string) {
+  public static @Unsigned UnsignedInteger valueOf(String string) {
     return valueOf(string, 10);
   }
 
@@ -115,7 +116,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * @throws NumberFormatException if the string does not contain a parsable unsigned {@code int}
    *     value
    */
-  public static UnsignedInteger valueOf(String string, @Positive int radix) {
+  public static @Unsigned UnsignedInteger valueOf(String string, @Positive int radix) {
     return fromIntBits(UnsignedInts.parseUnsignedInt(string, radix));
   }
 
@@ -125,7 +126,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    *
    * @since 14.0
    */
-  public UnsignedInteger plus(UnsignedInteger val) {
+  public @Unsigned UnsignedInteger plus(@Unsigned UnsignedInteger val) {
     return fromIntBits(this.value + checkNotNull(val).value);
   }
 
@@ -135,7 +136,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    *
    * @since 14.0
    */
-  public UnsignedInteger minus(UnsignedInteger val) {
+  public @Unsigned UnsignedInteger minus(@Unsigned UnsignedInteger val) {
     return fromIntBits(value - checkNotNull(val).value);
   }
 
@@ -146,7 +147,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * @since 14.0
    */
   @GwtIncompatible // Does not truncate correctly
-  public UnsignedInteger times(UnsignedInteger val) {
+  public @Unsigned UnsignedInteger times(@Unsigned UnsignedInteger val) {
     // TODO(lowasser): make this GWT-compatible
     return fromIntBits(value * checkNotNull(val).value);
   }
@@ -157,7 +158,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * @throws ArithmeticException if {@code val} is zero
    * @since 14.0
    */
-  public UnsignedInteger dividedBy(UnsignedInteger val) {
+  public @Unsigned UnsignedInteger dividedBy(@Unsigned UnsignedInteger val) {
     return fromIntBits(UnsignedInts.divide(value, checkNotNull(val).value));
   }
 
@@ -167,7 +168,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * @throws ArithmeticException if {@code val} is zero
    * @since 14.0
    */
-  public UnsignedInteger mod(UnsignedInteger val) {
+  public @Unsigned UnsignedInteger mod(@Unsigned UnsignedInteger val) {
     return fromIntBits(UnsignedInts.remainder(value, checkNotNull(val).value));
   }
 
@@ -218,7 +219,7 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * other}.
    */
   @Override
-  public int compareTo(UnsignedInteger other) {
+  public int compareTo(@Unsigned UnsignedInteger other) {
     checkNotNull(other);
     return compare(value, other.value);
   }
