@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
+import org.checkerframework.checker.signedness.qual.*;
 
 /**
  * A wrapper class for unsigned {@code long} values, supporting arithmetic operations.
@@ -40,17 +41,17 @@ import org.checkerframework.common.value.qual.IntRange;
  * @since 11.0
  */
 @GwtCompatible(serializable = true)
-public final class UnsignedLong extends Number implements Comparable<UnsignedLong>, Serializable {
+public final @Unsigned class UnsignedLong extends Number implements Comparable<UnsignedLong>, Serializable {
 
   private static final long UNSIGNED_MASK = 0x7fffffffffffffffL;
 
-  public static final UnsignedLong ZERO = new UnsignedLong(0);
-  public static final UnsignedLong ONE = new UnsignedLong(1);
-  public static final UnsignedLong MAX_VALUE = new UnsignedLong(-1L);
+  public static final @Unsigned UnsignedLong ZERO = new UnsignedLong(0);
+  public static final @Unsigned UnsignedLong ONE = new UnsignedLong(1);
+  public static final @Unsigned UnsignedLong MAX_VALUE = new UnsignedLong(-1L);
 
   private final long value;
 
-  private UnsignedLong(long value) {
+  private @Unsigned UnsignedLong(long value) {
     this.value = value;
   }
 
@@ -67,7 +68,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public static UnsignedLong fromLongBits(long bits) {
+  public static @Unsigned UnsignedLong fromLongBits(long bits) {
     // TODO(lowasser): consider caching small values, like Long.valueOf
     return new UnsignedLong(bits);
   }
@@ -79,7 +80,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    * @since 14.0
    */
   @CanIgnoreReturnValue
-  public static UnsignedLong valueOf(@NonNegative long value) {
+  public static @Unsigned UnsignedLong valueOf(@NonNegative long value) {
     checkArgument(value >= 0, "value (%s) is outside the range for an unsigned long value", value);
     return fromLongBits(value);
   }
@@ -91,7 +92,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    * @throws IllegalArgumentException if {@code value} is negative or {@code value >= 2^64}
    */
   @CanIgnoreReturnValue
-  public static UnsignedLong valueOf(BigInteger value) {
+  public static @Unsigned UnsignedLong valueOf(BigInteger value) {
     checkNotNull(value);
     checkArgument(
         value.signum() >= 0 && value.bitLength() <= Long.SIZE,
@@ -108,7 +109,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *     value
    */
   @CanIgnoreReturnValue
-  public static UnsignedLong valueOf(String string) {
+  public static @Unsigned UnsignedLong valueOf(String string) {
     return valueOf(string, 10);
   }
 
@@ -121,7 +122,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *     Character#MAX_RADIX}
    */
   @CanIgnoreReturnValue
-  public static UnsignedLong valueOf(String string, @IntRange(from = Character.MIN_RADIX, to = Character.MAX_RADIX) int radix) {
+  public static @Unsigned UnsignedLong valueOf(String string, @IntRange(from = Character.MIN_RADIX, to = Character.MAX_RADIX) int radix) {
     return fromLongBits(UnsignedLongs.parseUnsignedLong(string, radix));
   }
 
@@ -131,7 +132,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public UnsignedLong plus(UnsignedLong val) {
+  public @Unsigned UnsignedLong plus(@Unsigned UnsignedLong val) {
     return fromLongBits(this.value + checkNotNull(val).value);
   }
 
@@ -141,7 +142,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public UnsignedLong minus(UnsignedLong val) {
+  public @Unsigned UnsignedLong minus(@Unsigned UnsignedLong val) {
     return fromLongBits(this.value - checkNotNull(val).value);
   }
 
@@ -151,7 +152,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public UnsignedLong times(UnsignedLong val) {
+  public @Unsigned UnsignedLong times(@Unsigned UnsignedLong val) {
     return fromLongBits(value * checkNotNull(val).value);
   }
 
@@ -160,7 +161,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public UnsignedLong dividedBy(UnsignedLong val) {
+  public @Unsigned UnsignedLong dividedBy(@Unsigned UnsignedLong val) {
     return fromLongBits(UnsignedLongs.divide(value, checkNotNull(val).value));
   }
 
@@ -169,7 +170,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
    *
    * @since 14.0
    */
-  public UnsignedLong mod(UnsignedLong val) {
+  public @Unsigned UnsignedLong mod(@Unsigned UnsignedLong val) {
     return fromLongBits(UnsignedLongs.remainder(value, checkNotNull(val).value));
   }
 
@@ -229,7 +230,7 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
   }
 
   @Override
-  public int compareTo(UnsignedLong o) {
+  public int compareTo(@Unsigned UnsignedLong o) {
     checkNotNull(o);
     return UnsignedLongs.compare(value, o.value);
   }
