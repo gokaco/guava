@@ -453,6 +453,7 @@ public abstract class CharMatcher implements Predicate<Character> {
   /**
    * Helper method for {@link #precomputedInternal} that doesn't test if the negation is cheaper.
    */
+  @SuppressWarnings("index")  // table has bits if totalCharacters is sufficiently large
   @GwtIncompatible // SmallCharMatcher
   private static CharMatcher precomputedPositive(
       int totalCharacters, BitSet table, String description) {
@@ -607,7 +608,7 @@ public abstract class CharMatcher implements Predicate<Character> {
   /*
    * count is incremented at most sequence.length() times
    */
-  @SuppressWarnings("compound.assignment.type.incompatible") // variable incremented at most IndexOrHigh times
+  @SuppressWarnings("unary.increment.type.incompatible") // variable incremented at most IndexOrHigh times
   public @IndexOrHigh("#1") int countIn(CharSequence sequence) {
     @IndexOrHigh("#1") int count = 0;
     for (int i = 0; i < sequence.length(); i++) {
@@ -635,7 +636,7 @@ public abstract class CharMatcher implements Predicate<Character> {
      * if equal, pos is not incremented anymore
      * therefore both pos++ are safe
      */
-    "upperbound:compound.assignment.type.incompatible", // index incremented in nested loop with break
+    "upperbound:unary.increment.type.incompatible", // index incremented in nested loop with break
     "upperbound:array.access.unsafe.high", "upperbound:argument.type.incompatible", // https://github.com/kelloggm/checker-framework/issues/204
     /*
      * spread <= pos, therefore pos-spread >= 0
@@ -976,6 +977,7 @@ public abstract class CharMatcher implements Predicate<Character> {
    * Returns the Java Unicode escape sequence for the given {@code char}, in the form "\u12AB" where
    * "12AB" is the four hexadecimal digits representing the 16-bit code unit.
    */
+  @SuppressWarnings("index") // https://github.com/typetools/checker-framework/issues/2540
   private static String showCharacter(char c) {
     String hex = "0123456789ABCDEF";
     char[] tmp = {'\\', 'u', '\0', '\0', '\0', '\0'};
@@ -1404,6 +1406,7 @@ public abstract class CharMatcher implements Predicate<Character> {
       return ZEROES.toCharArray();
     }
 
+    @SuppressWarnings("index") // https://github.com/typetools/checker-framework/issues/2540
     private static char @SameLen("ZEROES")[] nines() {
       char[] nines = new char[ZEROES.length()];
       for (int i = 0; i < ZEROES.length(); i++) {

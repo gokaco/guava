@@ -77,6 +77,11 @@ public enum CaseFormat {
     String normalizeWord(String word) {
       return firstCharOnlyToUpper(word);
     }
+
+    @Override
+    String normalizeFirstWord(String word) {
+      return Ascii.toLowerCase(word);
+    }
   },
 
   /** Java and C++ class naming convention, e.g., "UpperCamel". */
@@ -133,6 +138,7 @@ public enum CaseFormat {
   @SuppressWarnings({
     "upperbound:assignment.type.incompatible", "upperbound:compound.assignment.type.incompatible", // refinement on multiple assignments in expression
     "upperbound:argument.type.incompatible", // length of sequence with ArrayLenRange in offset
+    "upperbound:unary.increment.type.incompatible",
   })
   String convert(CaseFormat format, String s) {
     // deal with camel conversion
@@ -209,8 +215,8 @@ public enum CaseFormat {
 
   abstract String normalizeWord(String word);
 
-  private String normalizeFirstWord(String word) {
-    return (this == LOWER_CAMEL) ? Ascii.toLowerCase(word) : normalizeWord(word);
+  String normalizeFirstWord(String word) {
+    return normalizeWord(word);
   }
 
   private static String firstCharOnlyToUpper(String word) {
